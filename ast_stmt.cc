@@ -71,3 +71,24 @@ PrintStmt::PrintStmt(List<Expr*> *a) {
 }
 
 
+CaseStmt::CaseStmt(Expr *i, List<Stmt*> *s){ 
+    Assert(i != NULL);
+    (caseval=i)->SetParent(this);
+    if ( s != NULL ){
+        (stmts=s)->SetParentAll(this);
+    }
+    
+}
+
+DefaultStmt::DefaultStmt(List<Stmt*> *s) {
+    Assert(s != NULL);
+    (stmts=s)->SetParentAll(this);
+}
+
+
+SwitchStmt::SwitchStmt(Expr *e, List<Stmt*> *cs, List<Stmt*> *ds){ 
+    Assert(e != NULL &&  cs != NULL &&  ds != NULL);
+    (expr=e)->SetParent(this);
+    (cases=cs)->SetParentAll(this);
+    (defaults=ds)->SetParentAll(this);
+}
