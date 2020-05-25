@@ -22,6 +22,8 @@ class Expr : public Stmt
   public:
     Expr(yyltype loc) : Stmt(loc) {}
     Expr() : Stmt() {}
+    virtual void Check(){return;}
+    virtual Type* GetType(){return(Type::errorType);}
 };
 
 /* This node type is used for those places where an expression is optional.
@@ -29,7 +31,7 @@ class Expr : public Stmt
  * NULL. By using a valid, but no-op, node, we save that trouble */
 class EmptyExpr : public Expr
 {
-  public:
+  public: Type* GetType(){return(Type::errorType);}
 };
 
 class IntConstant : public Expr 
@@ -39,6 +41,7 @@ class IntConstant : public Expr
   
   public:
     IntConstant(yyltype loc, int val);
+    Type* GetType(){return(Type::intType);}
 };
 
 class DoubleConstant : public Expr 
@@ -48,6 +51,7 @@ class DoubleConstant : public Expr
     
   public:
     DoubleConstant(yyltype loc, double val);
+    Type* GetType(){return(Type::doubleType);}
 };
 
 class BoolConstant : public Expr 
@@ -57,6 +61,7 @@ class BoolConstant : public Expr
     
   public:
     BoolConstant(yyltype loc, bool val);
+    Type* GetType(){return(Type::boolType);}
 };
 
 class StringConstant : public Expr 
@@ -66,12 +71,14 @@ class StringConstant : public Expr
     
   public:
     StringConstant(yyltype loc, const char *val);
+    Type* GetType(){return(Type::stringType);}
 };
 
 class NullConstant: public Expr 
 {
   public: 
     NullConstant(yyltype loc) : Expr(loc) {}
+    Type* GetType(){return(Type::nullType);}
 };
 
 class Operator : public Node 
@@ -94,6 +101,18 @@ class CompoundExpr : public Expr
   public:
     CompoundExpr(Expr *lhs, Operator *op, Expr *rhs); // for binary
     CompoundExpr(Operator *op, Expr *rhs);             // for unary
+    CompoundExpr(Expr *lhs, Operator *op);             // for postfix
+    Type* GetLeft();
+    Type* GetRight();
+    Type* GetType();
+    void Check();
+};
+
+class PostfixExpr : public CompoundExpr 
+{
+  public:
+    PostfixExpr(Expr *lhs, Operator *op) : CompoundExpr(lhs,op) {}
+    Type* GetType(){return(Type::errorType);}
 };
 
 class ArithmeticExpr : public CompoundExpr 
@@ -101,12 +120,15 @@ class ArithmeticExpr : public CompoundExpr
   public:
     ArithmeticExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     ArithmeticExpr(Operator *op, Expr *rhs) : CompoundExpr(op,rhs) {}
+    Type* GetType();
+    void Check();
 };
 
 class RelationalExpr : public CompoundExpr 
 {
   public:
     RelationalExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
+    Type* GetType(){return(Type::errorType);}
 };
 
 class EqualityExpr : public CompoundExpr 
@@ -114,6 +136,7 @@ class EqualityExpr : public CompoundExpr
   public:
     EqualityExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     const char *GetPrintNameForNode() { return "EqualityExpr"; }
+    Type* GetType(){return(Type::errorType);}
 };
 
 class LogicalExpr : public CompoundExpr 
@@ -122,6 +145,7 @@ class LogicalExpr : public CompoundExpr
     LogicalExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     LogicalExpr(Operator *op, Expr *rhs) : CompoundExpr(op,rhs) {}
     const char *GetPrintNameForNode() { return "LogicalExpr"; }
+    Type* GetType(){return(Type::errorType);}
 };
 
 class AssignExpr : public CompoundExpr 
@@ -129,18 +153,25 @@ class AssignExpr : public CompoundExpr
   public:
     AssignExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     const char *GetPrintNameForNode() { return "AssignExpr"; }
+    Type* GetLeft();
+    Type* GetRight();
+    Type* GetType();
+    void Check();
 };
 
 class LValue : public Expr 
 {
   public:
     LValue(yyltype loc) : Expr(loc) {}
+    Type* GetType(){return(Type::errorType);}
 };
 
 class This : public Expr 
 {
   public:
     This(yyltype loc) : Expr(loc) {}
+    Type* GetType();
+    void Check();
 };
 
 class ArrayAccess : public LValue 
@@ -150,6 +181,8 @@ class ArrayAccess : public LValue
     
   public:
     ArrayAccess(yyltype loc, Expr *base, Expr *subscript);
+    Type* GetType();
+    void Check();
 };
 
 /* Note that field access is used both for qualified names
@@ -165,6 +198,8 @@ class FieldAccess : public LValue
     
   public:
     FieldAccess(Expr *base, Identifier *field); //ok to pass NULL base
+    Type* GetType();
+    void Check();
 };
 
 /* Like field access, call is used both for qualified base.field()
@@ -180,6 +215,8 @@ class Call : public Expr
     
   public:
     Call(yyltype loc, Expr *base, Identifier *field, List<Expr*> *args);
+    Type* GetType(){return(Type::errorType);}
+    void Check();
 };
 
 class NewExpr : public Expr
@@ -189,6 +226,7 @@ class NewExpr : public Expr
     
   public:
     NewExpr(yyltype loc, NamedType *clsType);
+    Type* GetType(){return(Type::errorType);}
 };
 
 class NewArrayExpr : public Expr
@@ -196,21 +234,26 @@ class NewArrayExpr : public Expr
   protected:
     Expr *size;
     Type *elemType;
+    yyltype currloc;
     
   public:
     NewArrayExpr(yyltype loc, Expr *sizeExpr, Type *elemType);
+    Type* GetType();
+    void Check();
 };
 
 class ReadIntegerExpr : public Expr
 {
   public:
     ReadIntegerExpr(yyltype loc) : Expr(loc) {}
+    Type* GetType(){return(Type::errorType);}
 };
 
 class ReadLineExpr : public Expr
 {
   public:
     ReadLineExpr(yyltype loc) : Expr (loc) {}
+    Type* GetType(){return(Type::errorType);}
 };
 
     
