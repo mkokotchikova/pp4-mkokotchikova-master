@@ -7,8 +7,7 @@
  */
 
 
-#ifndef _H_ast_expr
-#define _H_ast_expr
+#pragma once
 
 #include "ast.h"
 #include "ast_stmt.h"

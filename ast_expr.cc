@@ -47,7 +47,22 @@ CompoundExpr::CompoundExpr(Operator *o, Expr *r)
     (right=r)->SetParent(this);
 }
    
-  
+
+// Эта конфигурация добавляется для постфиксной формы записи
+CompoundExpr::CompoundExpr(Expr *l, Operator *o) 
+  : Expr(Join(l->GetLocation(), o->GetLocation())) {
+    Assert(o != NULL && l != NULL);
+    (left=l)->SetParent(this) ; 
+    (op=o)->SetParent(this);
+    right=NULL;
+} 
+
+void CompoundExpr::Check() {
+  Type* aux;
+  aux = CompoundExpr::GetType();
+  return;
+}
+
 ArrayAccess::ArrayAccess(yyltype loc, Expr *b, Expr *s) : LValue(loc) {
     (base=b)->SetParent(this); 
     (subscript=s)->SetParent(this);

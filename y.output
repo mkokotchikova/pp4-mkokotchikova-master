@@ -1,0 +1,3633 @@
+Грамматика
+
+    0 $accept: Program $end
+
+    1 Program: DeclList
+
+    2 DeclList: DeclList Decl
+    3         | Decl
+
+    4 Decl: VariableDecl
+    5     | FunctionDecl
+    6     | ClassDecl
+    7     | InterfaceDecl
+
+    8 VariableDecl: Variable ';'
+
+    9 Variable: Type T_Identifier
+
+   10 Type: T_Int
+   11     | T_Double
+   12     | T_Bool
+   13     | T_String
+   14     | T_Identifier
+   15     | Type T_Dims
+
+   16 FunctionDecl: Type T_Identifier '(' Formals ')' StmtBlock
+   17             | T_Void T_Identifier '(' Formals ')' StmtBlock
+
+   18 Formals: VarList
+   19        | %empty
+
+   20 VarList: Variable
+   21        | VarList ',' Variable
+
+   22 ClassDecl: T_Class T_Identifier T_Extends T_Identifier T_Implements Ident_plus_comma '{' Field_star '}'
+   23          | T_Class T_Identifier T_Implements Ident_plus_comma '{' Field_star '}'
+   24          | T_Class T_Identifier T_Extends T_Identifier '{' Field_star '}'
+   25          | T_Class T_Identifier '{' Field_star '}'
+
+   26 Field_star: %empty
+   27           | Field_star Field
+
+   28 Ident_plus_comma: T_Identifier
+   29                 | Ident_plus_comma ',' T_Identifier
+
+   30 Field: VariableDecl
+   31      | FunctionDecl
+
+   32 InterfaceDecl: T_Interface T_Identifier '{' Prototype_star '}'
+
+   33 Prototype_star: %empty
+   34               | Prototype_star Prototype
+
+   35 Prototype: Type T_Identifier '(' Formals ')' ';'
+   36          | T_Void T_Identifier '(' Formals ')' ';'
+
+   37 Var_Decl_plus: VariableDecl
+   38              | Var_Decl_plus VariableDecl
+
+   39 Expr_plus_comma: Expr
+   40                | Expr_plus_comma ',' Expr
+
+   41 Expr: LValue '=' Expr
+   42     | Constant
+   43     | LValue
+   44     | T_This
+   45     | Call
+   46     | '(' Expr ')'
+   47     | Expr '+' Expr
+   48     | Expr '-' Expr
+   49     | Expr '*' Expr
+   50     | Expr '/' Expr
+   51     | Expr '%' Expr
+   52     | '-' Expr
+   53     | Expr '<' Expr
+   54     | Expr T_LessEqual Expr
+   55     | Expr '>' Expr
+   56     | Expr T_GreaterEqual Expr
+   57     | Expr T_Equal Expr
+   58     | Expr T_NotEqual Expr
+   59     | Expr T_And Expr
+   60     | Expr T_Or Expr
+   61     | '!' Expr
+   62     | T_ReadInteger '(' ')'
+   63     | T_ReadLine '(' ')'
+   64     | T_New '(' T_Identifier ')'
+   65     | T_NewArray '(' Expr ',' Type ')'
+   66     | Expr T_Increment
+   67     | Expr T_Decrement
+
+   68 Call: T_Identifier '(' Actuals ')'
+   69     | Expr '.' T_Identifier '(' Actuals ')'
+
+   70 Actuals: Expr_plus_comma
+   71        | %empty
+
+   72 Constant: T_IntConstant
+   73         | T_DoubleConstant
+   74         | T_BoolConstant
+   75         | T_StringConstant
+   76         | T_Null
+
+   77 Stmt_plus: Stmt
+   78          | Stmt_plus Stmt
+
+   79 StmtBlock: '{' Var_Decl_plus Stmt_plus '}'
+   80          | '{' Stmt_plus '}'
+   81          | '{' Var_Decl_plus '}'
+   82          | '{' '}'
+
+   83 Stmt: Optional_Expr ';'
+   84     | IfStmt
+   85     | WhileStmt
+   86     | ForStmt
+   87     | BreakStmt
+   88     | ReturnStmt
+   89     | PrintStmt
+   90     | StmtBlock
+
+   91 IfStmt: T_If '(' Expr ')' Stmt
+   92       | T_If '(' Expr ')' Stmt T_Else Stmt
+
+   93 WhileStmt: T_While '(' Expr ')' Stmt
+
+   94 ForStmt: T_For '(' Optional_Expr ';' Expr ';' Optional_Expr ')' Stmt
+
+   95 ReturnStmt: T_Return Optional_Expr ';'
+
+   96 BreakStmt: T_Break ';'
+
+   97 PrintStmt: T_Print '(' Expr_plus_comma ')' ';'
+
+   98 LValue: T_Identifier
+   99       | Expr '.' T_Identifier
+  100       | Expr '[' Expr ']'
+
+  101 Optional_Expr: %empty
+  102              | Expr
+
+
+Терминальные символы с правилами, в которых они появляются
+
+$end (0) 0
+'!' (33) 61
+'%' (37) 51
+'(' (40) 16 17 35 36 46 62 63 64 65 68 69 91 92 93 94 97
+')' (41) 16 17 35 36 46 62 63 64 65 68 69 91 92 93 94 97
+'*' (42) 49
+'+' (43) 47
+',' (44) 21 29 40 65
+'-' (45) 48 52
+'.' (46) 69 99
+'/' (47) 50
+';' (59) 8 35 36 83 94 95 96 97
+'<' (60) 53
+'=' (61) 41
+'>' (62) 55
+'[' (91) 100
+']' (93) 100
+'{' (123) 22 23 24 25 32 79 80 81 82
+'}' (125) 22 23 24 25 32 79 80 81 82
+error (256)
+T_Void (258) 17 36
+T_Bool (259) 12
+T_Int (260) 10
+T_Double (261) 11
+T_String (262) 13
+T_Class (263) 22 23 24 25
+T_LessEqual (264) 54
+T_GreaterEqual (265) 56
+T_Equal (266) 57
+T_NotEqual (267) 58
+T_Dims (268) 15
+T_And (269) 59
+T_Or (270) 60
+T_Null (271) 76
+T_Extends (272) 22 24
+T_This (273) 44
+T_Interface (274) 32
+T_Implements (275) 22 23
+T_While (276) 93
+T_For (277) 94
+T_If (278) 91 92
+T_Else (279) 92
+T_Return (280) 95
+T_Break (281) 96
+T_New (282) 64
+T_NewArray (283) 65
+T_Print (284) 97
+T_ReadInteger (285) 62
+T_ReadLine (286) 63
+T_Increment (287) 66
+T_Decrement (288) 67
+T_Identifier (289) 9 14 16 17 22 23 24 25 28 29 32 35 36 64 68 69 98
+    99
+T_StringConstant (290) 75
+T_IntConstant (291) 72
+T_DoubleConstant (292) 73
+T_BoolConstant (293) 74
+IF_NO_ELSE (294)
+UMINUS (295)
+
+
+Нетерминальные символы с правилами, в которых они появляются
+
+$accept (59)
+    налево: 0
+Program (60)
+    налево: 1, направо: 0
+DeclList (61)
+    налево: 2 3, направо: 1 2
+Decl (62)
+    налево: 4 5 6 7, направо: 2 3
+VariableDecl (63)
+    налево: 8, направо: 4 30 37 38
+Variable (64)
+    налево: 9, направо: 8 20 21
+Type (65)
+    налево: 10 11 12 13 14 15, направо: 9 15 16 35 65
+FunctionDecl (66)
+    налево: 16 17, направо: 5 31
+Formals (67)
+    налево: 18 19, направо: 16 17 35 36
+VarList (68)
+    налево: 20 21, направо: 18 21
+ClassDecl (69)
+    налево: 22 23 24 25, направо: 6
+Field_star (70)
+    налево: 26 27, направо: 22 23 24 25 27
+Ident_plus_comma (71)
+    налево: 28 29, направо: 22 23 29
+Field (72)
+    налево: 30 31, направо: 27
+InterfaceDecl (73)
+    налево: 32, направо: 7
+Prototype_star (74)
+    налево: 33 34, направо: 32 34
+Prototype (75)
+    налево: 35 36, направо: 34
+Var_Decl_plus (76)
+    налево: 37 38, направо: 38 79 81
+Expr_plus_comma (77)
+    налево: 39 40, направо: 40 70 97
+Expr (78)
+    налево: 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57
+    58 59 60 61 62 63 64 65 66 67, направо: 39 40 41 46 47 48
+    49 50 51 52 53 54 55 56 57 58 59 60 61 65 66 67 69 91 92 93 94
+    99 100 102
+Call (79)
+    налево: 68 69, направо: 45
+Actuals (80)
+    налево: 70 71, направо: 68 69
+Constant (81)
+    налево: 72 73 74 75 76, направо: 42
+Stmt_plus (82)
+    налево: 77 78, направо: 78 79 80
+StmtBlock (83)
+    налево: 79 80 81 82, направо: 16 17 90
+Stmt (84)
+    налево: 83 84 85 86 87 88 89 90, направо: 77 78 91
+    92 93 94
+IfStmt (85)
+    налево: 91 92, направо: 84
+WhileStmt (86)
+    налево: 93, направо: 85
+ForStmt (87)
+    налево: 94, направо: 86
+ReturnStmt (88)
+    налево: 95, направо: 88
+BreakStmt (89)
+    налево: 96, направо: 87
+PrintStmt (90)
+    налево: 97, направо: 89
+LValue (91)
+    налево: 98 99 100, направо: 41 43
+Optional_Expr (92)
+    налево: 101 102, направо: 83 94 95
+
+
+Состояние 0
+
+    0 $accept: . Program $end
+
+    T_Void        сдвиг, и переход в состояние 1
+    T_Bool        сдвиг, и переход в состояние 2
+    T_Int         сдвиг, и переход в состояние 3
+    T_Double      сдвиг, и переход в состояние 4
+    T_String      сдвиг, и переход в состояние 5
+    T_Class       сдвиг, и переход в состояние 6
+    T_Interface   сдвиг, и переход в состояние 7
+    T_Identifier  сдвиг, и переход в состояние 8
+
+    Program        переход в состояние 9
+    DeclList       переход в состояние 10
+    Decl           переход в состояние 11
+    VariableDecl   переход в состояние 12
+    Variable       переход в состояние 13
+    Type           переход в состояние 14
+    FunctionDecl   переход в состояние 15
+    ClassDecl      переход в состояние 16
+    InterfaceDecl  переход в состояние 17
+
+
+Состояние 1
+
+   17 FunctionDecl: T_Void . T_Identifier '(' Formals ')' StmtBlock
+
+    T_Identifier  сдвиг, и переход в состояние 18
+
+
+Состояние 2
+
+   12 Type: T_Bool .
+
+    $default  вывод с использованием правила 12 (Type)
+
+
+Состояние 3
+
+   10 Type: T_Int .
+
+    $default  вывод с использованием правила 10 (Type)
+
+
+Состояние 4
+
+   11 Type: T_Double .
+
+    $default  вывод с использованием правила 11 (Type)
+
+
+Состояние 5
+
+   13 Type: T_String .
+
+    $default  вывод с использованием правила 13 (Type)
+
+
+Состояние 6
+
+   22 ClassDecl: T_Class . T_Identifier T_Extends T_Identifier T_Implements Ident_plus_comma '{' Field_star '}'
+   23          | T_Class . T_Identifier T_Implements Ident_plus_comma '{' Field_star '}'
+   24          | T_Class . T_Identifier T_Extends T_Identifier '{' Field_star '}'
+   25          | T_Class . T_Identifier '{' Field_star '}'
+
+    T_Identifier  сдвиг, и переход в состояние 19
+
+
+Состояние 7
+
+   32 InterfaceDecl: T_Interface . T_Identifier '{' Prototype_star '}'
+
+    T_Identifier  сдвиг, и переход в состояние 20
+
+
+Состояние 8
+
+   14 Type: T_Identifier .
+
+    $default  вывод с использованием правила 14 (Type)
+
+
+Состояние 9
+
+    0 $accept: Program . $end
+
+    $end  сдвиг, и переход в состояние 21
+
+
+Состояние 10
+
+    1 Program: DeclList .
+    2 DeclList: DeclList . Decl
+
+    T_Void        сдвиг, и переход в состояние 1
+    T_Bool        сдвиг, и переход в состояние 2
+    T_Int         сдвиг, и переход в состояние 3
+    T_Double      сдвиг, и переход в состояние 4
+    T_String      сдвиг, и переход в состояние 5
+    T_Class       сдвиг, и переход в состояние 6
+    T_Interface   сдвиг, и переход в состояние 7
+    T_Identifier  сдвиг, и переход в состояние 8
+
+    $default  вывод с использованием правила 1 (Program)
+
+    Decl           переход в состояние 22
+    VariableDecl   переход в состояние 12
+    Variable       переход в состояние 13
+    Type           переход в состояние 14
+    FunctionDecl   переход в состояние 15
+    ClassDecl      переход в состояние 16
+    InterfaceDecl  переход в состояние 17
+
+
+Состояние 11
+
+    3 DeclList: Decl .
+
+    $default  вывод с использованием правила 3 (DeclList)
+
+
+Состояние 12
+
+    4 Decl: VariableDecl .
+
+    $default  вывод с использованием правила 4 (Decl)
+
+
+Состояние 13
+
+    8 VariableDecl: Variable . ';'
+
+    ';'  сдвиг, и переход в состояние 23
+
+
+Состояние 14
+
+    9 Variable: Type . T_Identifier
+   15 Type: Type . T_Dims
+   16 FunctionDecl: Type . T_Identifier '(' Formals ')' StmtBlock
+
+    T_Dims        сдвиг, и переход в состояние 24
+    T_Identifier  сдвиг, и переход в состояние 25
+
+
+Состояние 15
+
+    5 Decl: FunctionDecl .
+
+    $default  вывод с использованием правила 5 (Decl)
+
+
+Состояние 16
+
+    6 Decl: ClassDecl .
+
+    $default  вывод с использованием правила 6 (Decl)
+
+
+Состояние 17
+
+    7 Decl: InterfaceDecl .
+
+    $default  вывод с использованием правила 7 (Decl)
+
+
+Состояние 18
+
+   17 FunctionDecl: T_Void T_Identifier . '(' Formals ')' StmtBlock
+
+    '('  сдвиг, и переход в состояние 26
+
+
+Состояние 19
+
+   22 ClassDecl: T_Class T_Identifier . T_Extends T_Identifier T_Implements Ident_plus_comma '{' Field_star '}'
+   23          | T_Class T_Identifier . T_Implements Ident_plus_comma '{' Field_star '}'
+   24          | T_Class T_Identifier . T_Extends T_Identifier '{' Field_star '}'
+   25          | T_Class T_Identifier . '{' Field_star '}'
+
+    T_Extends     сдвиг, и переход в состояние 27
+    T_Implements  сдвиг, и переход в состояние 28
+    '{'           сдвиг, и переход в состояние 29
+
+
+Состояние 20
+
+   32 InterfaceDecl: T_Interface T_Identifier . '{' Prototype_star '}'
+
+    '{'  сдвиг, и переход в состояние 30
+
+
+Состояние 21
+
+    0 $accept: Program $end .
+
+    $default  принять
+
+
+Состояние 22
+
+    2 DeclList: DeclList Decl .
+
+    $default  вывод с использованием правила 2 (DeclList)
+
+
+Состояние 23
+
+    8 VariableDecl: Variable ';' .
+
+    $default  вывод с использованием правила 8 (VariableDecl)
+
+
+Состояние 24
+
+   15 Type: Type T_Dims .
+
+    $default  вывод с использованием правила 15 (Type)
+
+
+Состояние 25
+
+    9 Variable: Type T_Identifier .
+   16 FunctionDecl: Type T_Identifier . '(' Formals ')' StmtBlock
+
+    '('  сдвиг, и переход в состояние 31
+
+    $default  вывод с использованием правила 9 (Variable)
+
+
+Состояние 26
+
+   17 FunctionDecl: T_Void T_Identifier '(' . Formals ')' StmtBlock
+
+    T_Bool        сдвиг, и переход в состояние 2
+    T_Int         сдвиг, и переход в состояние 3
+    T_Double      сдвиг, и переход в состояние 4
+    T_String      сдвиг, и переход в состояние 5
+    T_Identifier  сдвиг, и переход в состояние 8
+
+    $default  вывод с использованием правила 19 (Formals)
+
+    Variable  переход в состояние 32
+    Type      переход в состояние 33
+    Formals   переход в состояние 34
+    VarList   переход в состояние 35
+
+
+Состояние 27
+
+   22 ClassDecl: T_Class T_Identifier T_Extends . T_Identifier T_Implements Ident_plus_comma '{' Field_star '}'
+   24          | T_Class T_Identifier T_Extends . T_Identifier '{' Field_star '}'
+
+    T_Identifier  сдвиг, и переход в состояние 36
+
+
+Состояние 28
+
+   23 ClassDecl: T_Class T_Identifier T_Implements . Ident_plus_comma '{' Field_star '}'
+
+    T_Identifier  сдвиг, и переход в состояние 37
+
+    Ident_plus_comma  переход в состояние 38
+
+
+Состояние 29
+
+   25 ClassDecl: T_Class T_Identifier '{' . Field_star '}'
+
+    $default  вывод с использованием правила 26 (Field_star)
+
+    Field_star  переход в состояние 39
+
+
+Состояние 30
+
+   32 InterfaceDecl: T_Interface T_Identifier '{' . Prototype_star '}'
+
+    $default  вывод с использованием правила 33 (Prototype_star)
+
+    Prototype_star  переход в состояние 40
+
+
+Состояние 31
+
+   16 FunctionDecl: Type T_Identifier '(' . Formals ')' StmtBlock
+
+    T_Bool        сдвиг, и переход в состояние 2
+    T_Int         сдвиг, и переход в состояние 3
+    T_Double      сдвиг, и переход в состояние 4
+    T_String      сдвиг, и переход в состояние 5
+    T_Identifier  сдвиг, и переход в состояние 8
+
+    $default  вывод с использованием правила 19 (Formals)
+
+    Variable  переход в состояние 32
+    Type      переход в состояние 33
+    Formals   переход в состояние 41
+    VarList   переход в состояние 35
+
+
+Состояние 32
+
+   20 VarList: Variable .
+
+    $default  вывод с использованием правила 20 (VarList)
+
+
+Состояние 33
+
+    9 Variable: Type . T_Identifier
+   15 Type: Type . T_Dims
+
+    T_Dims        сдвиг, и переход в состояние 24
+    T_Identifier  сдвиг, и переход в состояние 42
+
+
+Состояние 34
+
+   17 FunctionDecl: T_Void T_Identifier '(' Formals . ')' StmtBlock
+
+    ')'  сдвиг, и переход в состояние 43
+
+
+Состояние 35
+
+   18 Formals: VarList .
+   21 VarList: VarList . ',' Variable
+
+    ','  сдвиг, и переход в состояние 44
+
+    $default  вывод с использованием правила 18 (Formals)
+
+
+Состояние 36
+
+   22 ClassDecl: T_Class T_Identifier T_Extends T_Identifier . T_Implements Ident_plus_comma '{' Field_star '}'
+   24          | T_Class T_Identifier T_Extends T_Identifier . '{' Field_star '}'
+
+    T_Implements  сдвиг, и переход в состояние 45
+    '{'           сдвиг, и переход в состояние 46
+
+
+Состояние 37
+
+   28 Ident_plus_comma: T_Identifier .
+
+    $default  вывод с использованием правила 28 (Ident_plus_comma)
+
+
+Состояние 38
+
+   23 ClassDecl: T_Class T_Identifier T_Implements Ident_plus_comma . '{' Field_star '}'
+   29 Ident_plus_comma: Ident_plus_comma . ',' T_Identifier
+
+    ','  сдвиг, и переход в состояние 47
+    '{'  сдвиг, и переход в состояние 48
+
+
+Состояние 39
+
+   25 ClassDecl: T_Class T_Identifier '{' Field_star . '}'
+   27 Field_star: Field_star . Field
+
+    T_Void        сдвиг, и переход в состояние 1
+    T_Bool        сдвиг, и переход в состояние 2
+    T_Int         сдвиг, и переход в состояние 3
+    T_Double      сдвиг, и переход в состояние 4
+    T_String      сдвиг, и переход в состояние 5
+    T_Identifier  сдвиг, и переход в состояние 8
+    '}'           сдвиг, и переход в состояние 49
+
+    VariableDecl  переход в состояние 50
+    Variable      переход в состояние 13
+    Type          переход в состояние 14
+    FunctionDecl  переход в состояние 51
+    Field         переход в состояние 52
+
+
+Состояние 40
+
+   32 InterfaceDecl: T_Interface T_Identifier '{' Prototype_star . '}'
+   34 Prototype_star: Prototype_star . Prototype
+
+    T_Void        сдвиг, и переход в состояние 53
+    T_Bool        сдвиг, и переход в состояние 2
+    T_Int         сдвиг, и переход в состояние 3
+    T_Double      сдвиг, и переход в состояние 4
+    T_String      сдвиг, и переход в состояние 5
+    T_Identifier  сдвиг, и переход в состояние 8
+    '}'           сдвиг, и переход в состояние 54
+
+    Type       переход в состояние 55
+    Prototype  переход в состояние 56
+
+
+Состояние 41
+
+   16 FunctionDecl: Type T_Identifier '(' Formals . ')' StmtBlock
+
+    ')'  сдвиг, и переход в состояние 57
+
+
+Состояние 42
+
+    9 Variable: Type T_Identifier .
+
+    $default  вывод с использованием правила 9 (Variable)
+
+
+Состояние 43
+
+   17 FunctionDecl: T_Void T_Identifier '(' Formals ')' . StmtBlock
+
+    '{'  сдвиг, и переход в состояние 58
+
+    StmtBlock  переход в состояние 59
+
+
+Состояние 44
+
+   21 VarList: VarList ',' . Variable
+
+    T_Bool        сдвиг, и переход в состояние 2
+    T_Int         сдвиг, и переход в состояние 3
+    T_Double      сдвиг, и переход в состояние 4
+    T_String      сдвиг, и переход в состояние 5
+    T_Identifier  сдвиг, и переход в состояние 8
+
+    Variable  переход в состояние 60
+    Type      переход в состояние 33
+
+
+Состояние 45
+
+   22 ClassDecl: T_Class T_Identifier T_Extends T_Identifier T_Implements . Ident_plus_comma '{' Field_star '}'
+
+    T_Identifier  сдвиг, и переход в состояние 37
+
+    Ident_plus_comma  переход в состояние 61
+
+
+Состояние 46
+
+   24 ClassDecl: T_Class T_Identifier T_Extends T_Identifier '{' . Field_star '}'
+
+    $default  вывод с использованием правила 26 (Field_star)
+
+    Field_star  переход в состояние 62
+
+
+Состояние 47
+
+   29 Ident_plus_comma: Ident_plus_comma ',' . T_Identifier
+
+    T_Identifier  сдвиг, и переход в состояние 63
+
+
+Состояние 48
+
+   23 ClassDecl: T_Class T_Identifier T_Implements Ident_plus_comma '{' . Field_star '}'
+
+    $default  вывод с использованием правила 26 (Field_star)
+
+    Field_star  переход в состояние 64
+
+
+Состояние 49
+
+   25 ClassDecl: T_Class T_Identifier '{' Field_star '}' .
+
+    $default  вывод с использованием правила 25 (ClassDecl)
+
+
+Состояние 50
+
+   30 Field: VariableDecl .
+
+    $default  вывод с использованием правила 30 (Field)
+
+
+Состояние 51
+
+   31 Field: FunctionDecl .
+
+    $default  вывод с использованием правила 31 (Field)
+
+
+Состояние 52
+
+   27 Field_star: Field_star Field .
+
+    $default  вывод с использованием правила 27 (Field_star)
+
+
+Состояние 53
+
+   36 Prototype: T_Void . T_Identifier '(' Formals ')' ';'
+
+    T_Identifier  сдвиг, и переход в состояние 65
+
+
+Состояние 54
+
+   32 InterfaceDecl: T_Interface T_Identifier '{' Prototype_star '}' .
+
+    $default  вывод с использованием правила 32 (InterfaceDecl)
+
+
+Состояние 55
+
+   15 Type: Type . T_Dims
+   35 Prototype: Type . T_Identifier '(' Formals ')' ';'
+
+    T_Dims        сдвиг, и переход в состояние 24
+    T_Identifier  сдвиг, и переход в состояние 66
+
+
+Состояние 56
+
+   34 Prototype_star: Prototype_star Prototype .
+
+    $default  вывод с использованием правила 34 (Prototype_star)
+
+
+Состояние 57
+
+   16 FunctionDecl: Type T_Identifier '(' Formals ')' . StmtBlock
+
+    '{'  сдвиг, и переход в состояние 58
+
+    StmtBlock  переход в состояние 67
+
+
+Состояние 58
+
+   79 StmtBlock: '{' . Var_Decl_plus Stmt_plus '}'
+   80          | '{' . Stmt_plus '}'
+   81          | '{' . Var_Decl_plus '}'
+   82          | '{' . '}'
+
+    T_Bool            сдвиг, и переход в состояние 2
+    T_Int             сдвиг, и переход в состояние 3
+    T_Double          сдвиг, и переход в состояние 4
+    T_String          сдвиг, и переход в состояние 5
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_While           сдвиг, и переход в состояние 70
+    T_For             сдвиг, и переход в состояние 71
+    T_If              сдвиг, и переход в состояние 72
+    T_Return          сдвиг, и переход в состояние 73
+    T_Break           сдвиг, и переход в состояние 74
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_Print           сдвиг, и переход в состояние 77
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 80
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+    '{'               сдвиг, и переход в состояние 58
+    '}'               сдвиг, и переход в состояние 88
+
+    $default  вывод с использованием правила 101 (Optional_Expr)
+
+    VariableDecl   переход в состояние 89
+    Variable       переход в состояние 13
+    Type           переход в состояние 33
+    Var_Decl_plus  переход в состояние 90
+    Expr           переход в состояние 91
+    Call           переход в состояние 92
+    Constant       переход в состояние 93
+    Stmt_plus      переход в состояние 94
+    StmtBlock      переход в состояние 95
+    Stmt           переход в состояние 96
+    IfStmt         переход в состояние 97
+    WhileStmt      переход в состояние 98
+    ForStmt        переход в состояние 99
+    ReturnStmt     переход в состояние 100
+    BreakStmt      переход в состояние 101
+    PrintStmt      переход в состояние 102
+    LValue         переход в состояние 103
+    Optional_Expr  переход в состояние 104
+
+
+Состояние 59
+
+   17 FunctionDecl: T_Void T_Identifier '(' Formals ')' StmtBlock .
+
+    $default  вывод с использованием правила 17 (FunctionDecl)
+
+
+Состояние 60
+
+   21 VarList: VarList ',' Variable .
+
+    $default  вывод с использованием правила 21 (VarList)
+
+
+Состояние 61
+
+   22 ClassDecl: T_Class T_Identifier T_Extends T_Identifier T_Implements Ident_plus_comma . '{' Field_star '}'
+   29 Ident_plus_comma: Ident_plus_comma . ',' T_Identifier
+
+    ','  сдвиг, и переход в состояние 47
+    '{'  сдвиг, и переход в состояние 105
+
+
+Состояние 62
+
+   24 ClassDecl: T_Class T_Identifier T_Extends T_Identifier '{' Field_star . '}'
+   27 Field_star: Field_star . Field
+
+    T_Void        сдвиг, и переход в состояние 1
+    T_Bool        сдвиг, и переход в состояние 2
+    T_Int         сдвиг, и переход в состояние 3
+    T_Double      сдвиг, и переход в состояние 4
+    T_String      сдвиг, и переход в состояние 5
+    T_Identifier  сдвиг, и переход в состояние 8
+    '}'           сдвиг, и переход в состояние 106
+
+    VariableDecl  переход в состояние 50
+    Variable      переход в состояние 13
+    Type          переход в состояние 14
+    FunctionDecl  переход в состояние 51
+    Field         переход в состояние 52
+
+
+Состояние 63
+
+   29 Ident_plus_comma: Ident_plus_comma ',' T_Identifier .
+
+    $default  вывод с использованием правила 29 (Ident_plus_comma)
+
+
+Состояние 64
+
+   23 ClassDecl: T_Class T_Identifier T_Implements Ident_plus_comma '{' Field_star . '}'
+   27 Field_star: Field_star . Field
+
+    T_Void        сдвиг, и переход в состояние 1
+    T_Bool        сдвиг, и переход в состояние 2
+    T_Int         сдвиг, и переход в состояние 3
+    T_Double      сдвиг, и переход в состояние 4
+    T_String      сдвиг, и переход в состояние 5
+    T_Identifier  сдвиг, и переход в состояние 8
+    '}'           сдвиг, и переход в состояние 107
+
+    VariableDecl  переход в состояние 50
+    Variable      переход в состояние 13
+    Type          переход в состояние 14
+    FunctionDecl  переход в состояние 51
+    Field         переход в состояние 52
+
+
+Состояние 65
+
+   36 Prototype: T_Void T_Identifier . '(' Formals ')' ';'
+
+    '('  сдвиг, и переход в состояние 108
+
+
+Состояние 66
+
+   35 Prototype: Type T_Identifier . '(' Formals ')' ';'
+
+    '('  сдвиг, и переход в состояние 109
+
+
+Состояние 67
+
+   16 FunctionDecl: Type T_Identifier '(' Formals ')' StmtBlock .
+
+    $default  вывод с использованием правила 16 (FunctionDecl)
+
+
+Состояние 68
+
+   76 Constant: T_Null .
+
+    $default  вывод с использованием правила 76 (Constant)
+
+
+Состояние 69
+
+   44 Expr: T_This .
+
+    $default  вывод с использованием правила 44 (Expr)
+
+
+Состояние 70
+
+   93 WhileStmt: T_While . '(' Expr ')' Stmt
+
+    '('  сдвиг, и переход в состояние 110
+
+
+Состояние 71
+
+   94 ForStmt: T_For . '(' Optional_Expr ';' Expr ';' Optional_Expr ')' Stmt
+
+    '('  сдвиг, и переход в состояние 111
+
+
+Состояние 72
+
+   91 IfStmt: T_If . '(' Expr ')' Stmt
+   92       | T_If . '(' Expr ')' Stmt T_Else Stmt
+
+    '('  сдвиг, и переход в состояние 112
+
+
+Состояние 73
+
+   95 ReturnStmt: T_Return . Optional_Expr ';'
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    $default  вывод с использованием правила 101 (Optional_Expr)
+
+    Expr           переход в состояние 91
+    Call           переход в состояние 92
+    Constant       переход в состояние 93
+    LValue         переход в состояние 103
+    Optional_Expr  переход в состояние 114
+
+
+Состояние 74
+
+   96 BreakStmt: T_Break . ';'
+
+    ';'  сдвиг, и переход в состояние 115
+
+
+Состояние 75
+
+   64 Expr: T_New . '(' T_Identifier ')'
+
+    '('  сдвиг, и переход в состояние 116
+
+
+Состояние 76
+
+   65 Expr: T_NewArray . '(' Expr ',' Type ')'
+
+    '('  сдвиг, и переход в состояние 117
+
+
+Состояние 77
+
+   97 PrintStmt: T_Print . '(' Expr_plus_comma ')' ';'
+
+    '('  сдвиг, и переход в состояние 118
+
+
+Состояние 78
+
+   62 Expr: T_ReadInteger . '(' ')'
+
+    '('  сдвиг, и переход в состояние 119
+
+
+Состояние 79
+
+   63 Expr: T_ReadLine . '(' ')'
+
+    '('  сдвиг, и переход в состояние 120
+
+
+Состояние 80
+
+   14 Type: T_Identifier .
+   68 Call: T_Identifier . '(' Actuals ')'
+   98 LValue: T_Identifier .
+
+    '('  сдвиг, и переход в состояние 121
+
+    T_Dims        вывод с использованием правила 14 (Type)
+    T_Identifier  вывод с использованием правила 14 (Type)
+    $default      вывод с использованием правила 98 (LValue)
+
+
+Состояние 81
+
+   75 Constant: T_StringConstant .
+
+    $default  вывод с использованием правила 75 (Constant)
+
+
+Состояние 82
+
+   72 Constant: T_IntConstant .
+
+    $default  вывод с использованием правила 72 (Constant)
+
+
+Состояние 83
+
+   73 Constant: T_DoubleConstant .
+
+    $default  вывод с использованием правила 73 (Constant)
+
+
+Состояние 84
+
+   74 Constant: T_BoolConstant .
+
+    $default  вывод с использованием правила 74 (Constant)
+
+
+Состояние 85
+
+   52 Expr: '-' . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 122
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 86
+
+   61 Expr: '!' . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 123
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 87
+
+   46 Expr: '(' . Expr ')'
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 124
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 88
+
+   82 StmtBlock: '{' '}' .
+
+    $default  вывод с использованием правила 82 (StmtBlock)
+
+
+Состояние 89
+
+   37 Var_Decl_plus: VariableDecl .
+
+    $default  вывод с использованием правила 37 (Var_Decl_plus)
+
+
+Состояние 90
+
+   38 Var_Decl_plus: Var_Decl_plus . VariableDecl
+   79 StmtBlock: '{' Var_Decl_plus . Stmt_plus '}'
+   81          | '{' Var_Decl_plus . '}'
+
+    T_Bool            сдвиг, и переход в состояние 2
+    T_Int             сдвиг, и переход в состояние 3
+    T_Double          сдвиг, и переход в состояние 4
+    T_String          сдвиг, и переход в состояние 5
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_While           сдвиг, и переход в состояние 70
+    T_For             сдвиг, и переход в состояние 71
+    T_If              сдвиг, и переход в состояние 72
+    T_Return          сдвиг, и переход в состояние 73
+    T_Break           сдвиг, и переход в состояние 74
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_Print           сдвиг, и переход в состояние 77
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 80
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+    '{'               сдвиг, и переход в состояние 58
+    '}'               сдвиг, и переход в состояние 125
+
+    $default  вывод с использованием правила 101 (Optional_Expr)
+
+    VariableDecl   переход в состояние 126
+    Variable       переход в состояние 13
+    Type           переход в состояние 33
+    Expr           переход в состояние 91
+    Call           переход в состояние 92
+    Constant       переход в состояние 93
+    Stmt_plus      переход в состояние 127
+    StmtBlock      переход в состояние 95
+    Stmt           переход в состояние 96
+    IfStmt         переход в состояние 97
+    WhileStmt      переход в состояние 98
+    ForStmt        переход в состояние 99
+    ReturnStmt     переход в состояние 100
+    BreakStmt      переход в состояние 101
+    PrintStmt      переход в состояние 102
+    LValue         переход в состояние 103
+    Optional_Expr  переход в состояние 104
+
+
+Состояние 91
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+  102 Optional_Expr: Expr .
+
+    T_LessEqual     сдвиг, и переход в состояние 128
+    T_GreaterEqual  сдвиг, и переход в состояние 129
+    T_Equal         сдвиг, и переход в состояние 130
+    T_NotEqual      сдвиг, и переход в состояние 131
+    T_And           сдвиг, и переход в состояние 132
+    T_Or            сдвиг, и переход в состояние 133
+    T_Increment     сдвиг, и переход в состояние 134
+    T_Decrement     сдвиг, и переход в состояние 135
+    '<'             сдвиг, и переход в состояние 136
+    '>'             сдвиг, и переход в состояние 137
+    '+'             сдвиг, и переход в состояние 138
+    '-'             сдвиг, и переход в состояние 139
+    '*'             сдвиг, и переход в состояние 140
+    '/'             сдвиг, и переход в состояние 141
+    '%'             сдвиг, и переход в состояние 142
+    '['             сдвиг, и переход в состояние 143
+    '.'             сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 102 (Optional_Expr)
+
+
+Состояние 92
+
+   45 Expr: Call .
+
+    $default  вывод с использованием правила 45 (Expr)
+
+
+Состояние 93
+
+   42 Expr: Constant .
+
+    $default  вывод с использованием правила 42 (Expr)
+
+
+Состояние 94
+
+   78 Stmt_plus: Stmt_plus . Stmt
+   80 StmtBlock: '{' Stmt_plus . '}'
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_While           сдвиг, и переход в состояние 70
+    T_For             сдвиг, и переход в состояние 71
+    T_If              сдвиг, и переход в состояние 72
+    T_Return          сдвиг, и переход в состояние 73
+    T_Break           сдвиг, и переход в состояние 74
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_Print           сдвиг, и переход в состояние 77
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+    '{'               сдвиг, и переход в состояние 58
+    '}'               сдвиг, и переход в состояние 145
+
+    $default  вывод с использованием правила 101 (Optional_Expr)
+
+    Expr           переход в состояние 91
+    Call           переход в состояние 92
+    Constant       переход в состояние 93
+    StmtBlock      переход в состояние 95
+    Stmt           переход в состояние 146
+    IfStmt         переход в состояние 97
+    WhileStmt      переход в состояние 98
+    ForStmt        переход в состояние 99
+    ReturnStmt     переход в состояние 100
+    BreakStmt      переход в состояние 101
+    PrintStmt      переход в состояние 102
+    LValue         переход в состояние 103
+    Optional_Expr  переход в состояние 104
+
+
+Состояние 95
+
+   90 Stmt: StmtBlock .
+
+    $default  вывод с использованием правила 90 (Stmt)
+
+
+Состояние 96
+
+   77 Stmt_plus: Stmt .
+
+    $default  вывод с использованием правила 77 (Stmt_plus)
+
+
+Состояние 97
+
+   84 Stmt: IfStmt .
+
+    $default  вывод с использованием правила 84 (Stmt)
+
+
+Состояние 98
+
+   85 Stmt: WhileStmt .
+
+    $default  вывод с использованием правила 85 (Stmt)
+
+
+Состояние 99
+
+   86 Stmt: ForStmt .
+
+    $default  вывод с использованием правила 86 (Stmt)
+
+
+Состояние 100
+
+   88 Stmt: ReturnStmt .
+
+    $default  вывод с использованием правила 88 (Stmt)
+
+
+Состояние 101
+
+   87 Stmt: BreakStmt .
+
+    $default  вывод с использованием правила 87 (Stmt)
+
+
+Состояние 102
+
+   89 Stmt: PrintStmt .
+
+    $default  вывод с использованием правила 89 (Stmt)
+
+
+Состояние 103
+
+   41 Expr: LValue . '=' Expr
+   43     | LValue .
+
+    '='  сдвиг, и переход в состояние 147
+
+    $default  вывод с использованием правила 43 (Expr)
+
+
+Состояние 104
+
+   83 Stmt: Optional_Expr . ';'
+
+    ';'  сдвиг, и переход в состояние 148
+
+
+Состояние 105
+
+   22 ClassDecl: T_Class T_Identifier T_Extends T_Identifier T_Implements Ident_plus_comma '{' . Field_star '}'
+
+    $default  вывод с использованием правила 26 (Field_star)
+
+    Field_star  переход в состояние 149
+
+
+Состояние 106
+
+   24 ClassDecl: T_Class T_Identifier T_Extends T_Identifier '{' Field_star '}' .
+
+    $default  вывод с использованием правила 24 (ClassDecl)
+
+
+Состояние 107
+
+   23 ClassDecl: T_Class T_Identifier T_Implements Ident_plus_comma '{' Field_star '}' .
+
+    $default  вывод с использованием правила 23 (ClassDecl)
+
+
+Состояние 108
+
+   36 Prototype: T_Void T_Identifier '(' . Formals ')' ';'
+
+    T_Bool        сдвиг, и переход в состояние 2
+    T_Int         сдвиг, и переход в состояние 3
+    T_Double      сдвиг, и переход в состояние 4
+    T_String      сдвиг, и переход в состояние 5
+    T_Identifier  сдвиг, и переход в состояние 8
+
+    $default  вывод с использованием правила 19 (Formals)
+
+    Variable  переход в состояние 32
+    Type      переход в состояние 33
+    Formals   переход в состояние 150
+    VarList   переход в состояние 35
+
+
+Состояние 109
+
+   35 Prototype: Type T_Identifier '(' . Formals ')' ';'
+
+    T_Bool        сдвиг, и переход в состояние 2
+    T_Int         сдвиг, и переход в состояние 3
+    T_Double      сдвиг, и переход в состояние 4
+    T_String      сдвиг, и переход в состояние 5
+    T_Identifier  сдвиг, и переход в состояние 8
+
+    $default  вывод с использованием правила 19 (Formals)
+
+    Variable  переход в состояние 32
+    Type      переход в состояние 33
+    Formals   переход в состояние 151
+    VarList   переход в состояние 35
+
+
+Состояние 110
+
+   93 WhileStmt: T_While '(' . Expr ')' Stmt
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 152
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 111
+
+   94 ForStmt: T_For '(' . Optional_Expr ';' Expr ';' Optional_Expr ')' Stmt
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    $default  вывод с использованием правила 101 (Optional_Expr)
+
+    Expr           переход в состояние 91
+    Call           переход в состояние 92
+    Constant       переход в состояние 93
+    LValue         переход в состояние 103
+    Optional_Expr  переход в состояние 153
+
+
+Состояние 112
+
+   91 IfStmt: T_If '(' . Expr ')' Stmt
+   92       | T_If '(' . Expr ')' Stmt T_Else Stmt
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 154
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 113
+
+   68 Call: T_Identifier . '(' Actuals ')'
+   98 LValue: T_Identifier .
+
+    '('  сдвиг, и переход в состояние 121
+
+    $default  вывод с использованием правила 98 (LValue)
+
+
+Состояние 114
+
+   95 ReturnStmt: T_Return Optional_Expr . ';'
+
+    ';'  сдвиг, и переход в состояние 155
+
+
+Состояние 115
+
+   96 BreakStmt: T_Break ';' .
+
+    $default  вывод с использованием правила 96 (BreakStmt)
+
+
+Состояние 116
+
+   64 Expr: T_New '(' . T_Identifier ')'
+
+    T_Identifier  сдвиг, и переход в состояние 156
+
+
+Состояние 117
+
+   65 Expr: T_NewArray '(' . Expr ',' Type ')'
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 157
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 118
+
+   97 PrintStmt: T_Print '(' . Expr_plus_comma ')' ';'
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr_plus_comma  переход в состояние 158
+    Expr             переход в состояние 159
+    Call             переход в состояние 92
+    Constant         переход в состояние 93
+    LValue           переход в состояние 103
+
+
+Состояние 119
+
+   62 Expr: T_ReadInteger '(' . ')'
+
+    ')'  сдвиг, и переход в состояние 160
+
+
+Состояние 120
+
+   63 Expr: T_ReadLine '(' . ')'
+
+    ')'  сдвиг, и переход в состояние 161
+
+
+Состояние 121
+
+   68 Call: T_Identifier '(' . Actuals ')'
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    $default  вывод с использованием правила 71 (Actuals)
+
+    Expr_plus_comma  переход в состояние 162
+    Expr             переход в состояние 159
+    Call             переход в состояние 92
+    Actuals          переход в состояние 163
+    Constant         переход в состояние 93
+    LValue           переход в состояние 103
+
+
+Состояние 122
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   52     | '-' Expr .
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_Increment  сдвиг, и переход в состояние 134
+    T_Decrement  сдвиг, и переход в состояние 135
+    '['          сдвиг, и переход в состояние 143
+    '.'          сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 52 (Expr)
+
+
+Состояние 123
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   61     | '!' Expr .
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_Increment  сдвиг, и переход в состояние 134
+    T_Decrement  сдвиг, и переход в состояние 135
+    '['          сдвиг, и переход в состояние 143
+    '.'          сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 61 (Expr)
+
+
+Состояние 124
+
+   46 Expr: '(' Expr . ')'
+   47     | Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_LessEqual     сдвиг, и переход в состояние 128
+    T_GreaterEqual  сдвиг, и переход в состояние 129
+    T_Equal         сдвиг, и переход в состояние 130
+    T_NotEqual      сдвиг, и переход в состояние 131
+    T_And           сдвиг, и переход в состояние 132
+    T_Or            сдвиг, и переход в состояние 133
+    T_Increment     сдвиг, и переход в состояние 134
+    T_Decrement     сдвиг, и переход в состояние 135
+    '<'             сдвиг, и переход в состояние 136
+    '>'             сдвиг, и переход в состояние 137
+    '+'             сдвиг, и переход в состояние 138
+    '-'             сдвиг, и переход в состояние 139
+    '*'             сдвиг, и переход в состояние 140
+    '/'             сдвиг, и переход в состояние 141
+    '%'             сдвиг, и переход в состояние 142
+    '['             сдвиг, и переход в состояние 143
+    '.'             сдвиг, и переход в состояние 144
+    ')'             сдвиг, и переход в состояние 164
+
+
+Состояние 125
+
+   81 StmtBlock: '{' Var_Decl_plus '}' .
+
+    $default  вывод с использованием правила 81 (StmtBlock)
+
+
+Состояние 126
+
+   38 Var_Decl_plus: Var_Decl_plus VariableDecl .
+
+    $default  вывод с использованием правила 38 (Var_Decl_plus)
+
+
+Состояние 127
+
+   78 Stmt_plus: Stmt_plus . Stmt
+   79 StmtBlock: '{' Var_Decl_plus Stmt_plus . '}'
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_While           сдвиг, и переход в состояние 70
+    T_For             сдвиг, и переход в состояние 71
+    T_If              сдвиг, и переход в состояние 72
+    T_Return          сдвиг, и переход в состояние 73
+    T_Break           сдвиг, и переход в состояние 74
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_Print           сдвиг, и переход в состояние 77
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+    '{'               сдвиг, и переход в состояние 58
+    '}'               сдвиг, и переход в состояние 165
+
+    $default  вывод с использованием правила 101 (Optional_Expr)
+
+    Expr           переход в состояние 91
+    Call           переход в состояние 92
+    Constant       переход в состояние 93
+    StmtBlock      переход в состояние 95
+    Stmt           переход в состояние 146
+    IfStmt         переход в состояние 97
+    WhileStmt      переход в состояние 98
+    ForStmt        переход в состояние 99
+    ReturnStmt     переход в состояние 100
+    BreakStmt      переход в состояние 101
+    PrintStmt      переход в состояние 102
+    LValue         переход в состояние 103
+    Optional_Expr  переход в состояние 104
+
+
+Состояние 128
+
+   54 Expr: Expr T_LessEqual . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 166
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 129
+
+   56 Expr: Expr T_GreaterEqual . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 167
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 130
+
+   57 Expr: Expr T_Equal . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 168
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 131
+
+   58 Expr: Expr T_NotEqual . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 169
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 132
+
+   59 Expr: Expr T_And . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 170
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 133
+
+   60 Expr: Expr T_Or . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 171
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 134
+
+   66 Expr: Expr T_Increment .
+
+    $default  вывод с использованием правила 66 (Expr)
+
+
+Состояние 135
+
+   67 Expr: Expr T_Decrement .
+
+    $default  вывод с использованием правила 67 (Expr)
+
+
+Состояние 136
+
+   53 Expr: Expr '<' . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 172
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 137
+
+   55 Expr: Expr '>' . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 173
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 138
+
+   47 Expr: Expr '+' . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 174
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 139
+
+   48 Expr: Expr '-' . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 175
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 140
+
+   49 Expr: Expr '*' . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 176
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 141
+
+   50 Expr: Expr '/' . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 177
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 142
+
+   51 Expr: Expr '%' . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 178
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 143
+
+  100 LValue: Expr '[' . Expr ']'
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 179
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 144
+
+   69 Call: Expr '.' . T_Identifier '(' Actuals ')'
+   99 LValue: Expr '.' . T_Identifier
+
+    T_Identifier  сдвиг, и переход в состояние 180
+
+
+Состояние 145
+
+   80 StmtBlock: '{' Stmt_plus '}' .
+
+    $default  вывод с использованием правила 80 (StmtBlock)
+
+
+Состояние 146
+
+   78 Stmt_plus: Stmt_plus Stmt .
+
+    $default  вывод с использованием правила 78 (Stmt_plus)
+
+
+Состояние 147
+
+   41 Expr: LValue '=' . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 181
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 148
+
+   83 Stmt: Optional_Expr ';' .
+
+    $default  вывод с использованием правила 83 (Stmt)
+
+
+Состояние 149
+
+   22 ClassDecl: T_Class T_Identifier T_Extends T_Identifier T_Implements Ident_plus_comma '{' Field_star . '}'
+   27 Field_star: Field_star . Field
+
+    T_Void        сдвиг, и переход в состояние 1
+    T_Bool        сдвиг, и переход в состояние 2
+    T_Int         сдвиг, и переход в состояние 3
+    T_Double      сдвиг, и переход в состояние 4
+    T_String      сдвиг, и переход в состояние 5
+    T_Identifier  сдвиг, и переход в состояние 8
+    '}'           сдвиг, и переход в состояние 182
+
+    VariableDecl  переход в состояние 50
+    Variable      переход в состояние 13
+    Type          переход в состояние 14
+    FunctionDecl  переход в состояние 51
+    Field         переход в состояние 52
+
+
+Состояние 150
+
+   36 Prototype: T_Void T_Identifier '(' Formals . ')' ';'
+
+    ')'  сдвиг, и переход в состояние 183
+
+
+Состояние 151
+
+   35 Prototype: Type T_Identifier '(' Formals . ')' ';'
+
+    ')'  сдвиг, и переход в состояние 184
+
+
+Состояние 152
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   93 WhileStmt: T_While '(' Expr . ')' Stmt
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_LessEqual     сдвиг, и переход в состояние 128
+    T_GreaterEqual  сдвиг, и переход в состояние 129
+    T_Equal         сдвиг, и переход в состояние 130
+    T_NotEqual      сдвиг, и переход в состояние 131
+    T_And           сдвиг, и переход в состояние 132
+    T_Or            сдвиг, и переход в состояние 133
+    T_Increment     сдвиг, и переход в состояние 134
+    T_Decrement     сдвиг, и переход в состояние 135
+    '<'             сдвиг, и переход в состояние 136
+    '>'             сдвиг, и переход в состояние 137
+    '+'             сдвиг, и переход в состояние 138
+    '-'             сдвиг, и переход в состояние 139
+    '*'             сдвиг, и переход в состояние 140
+    '/'             сдвиг, и переход в состояние 141
+    '%'             сдвиг, и переход в состояние 142
+    '['             сдвиг, и переход в состояние 143
+    '.'             сдвиг, и переход в состояние 144
+    ')'             сдвиг, и переход в состояние 185
+
+
+Состояние 153
+
+   94 ForStmt: T_For '(' Optional_Expr . ';' Expr ';' Optional_Expr ')' Stmt
+
+    ';'  сдвиг, и переход в состояние 186
+
+
+Состояние 154
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   91 IfStmt: T_If '(' Expr . ')' Stmt
+   92       | T_If '(' Expr . ')' Stmt T_Else Stmt
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_LessEqual     сдвиг, и переход в состояние 128
+    T_GreaterEqual  сдвиг, и переход в состояние 129
+    T_Equal         сдвиг, и переход в состояние 130
+    T_NotEqual      сдвиг, и переход в состояние 131
+    T_And           сдвиг, и переход в состояние 132
+    T_Or            сдвиг, и переход в состояние 133
+    T_Increment     сдвиг, и переход в состояние 134
+    T_Decrement     сдвиг, и переход в состояние 135
+    '<'             сдвиг, и переход в состояние 136
+    '>'             сдвиг, и переход в состояние 137
+    '+'             сдвиг, и переход в состояние 138
+    '-'             сдвиг, и переход в состояние 139
+    '*'             сдвиг, и переход в состояние 140
+    '/'             сдвиг, и переход в состояние 141
+    '%'             сдвиг, и переход в состояние 142
+    '['             сдвиг, и переход в состояние 143
+    '.'             сдвиг, и переход в состояние 144
+    ')'             сдвиг, и переход в состояние 187
+
+
+Состояние 155
+
+   95 ReturnStmt: T_Return Optional_Expr ';' .
+
+    $default  вывод с использованием правила 95 (ReturnStmt)
+
+
+Состояние 156
+
+   64 Expr: T_New '(' T_Identifier . ')'
+
+    ')'  сдвиг, и переход в состояние 188
+
+
+Состояние 157
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   65     | T_NewArray '(' Expr . ',' Type ')'
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_LessEqual     сдвиг, и переход в состояние 128
+    T_GreaterEqual  сдвиг, и переход в состояние 129
+    T_Equal         сдвиг, и переход в состояние 130
+    T_NotEqual      сдвиг, и переход в состояние 131
+    T_And           сдвиг, и переход в состояние 132
+    T_Or            сдвиг, и переход в состояние 133
+    T_Increment     сдвиг, и переход в состояние 134
+    T_Decrement     сдвиг, и переход в состояние 135
+    '<'             сдвиг, и переход в состояние 136
+    '>'             сдвиг, и переход в состояние 137
+    '+'             сдвиг, и переход в состояние 138
+    '-'             сдвиг, и переход в состояние 139
+    '*'             сдвиг, и переход в состояние 140
+    '/'             сдвиг, и переход в состояние 141
+    '%'             сдвиг, и переход в состояние 142
+    '['             сдвиг, и переход в состояние 143
+    '.'             сдвиг, и переход в состояние 144
+    ','             сдвиг, и переход в состояние 189
+
+
+Состояние 158
+
+   40 Expr_plus_comma: Expr_plus_comma . ',' Expr
+   97 PrintStmt: T_Print '(' Expr_plus_comma . ')' ';'
+
+    ')'  сдвиг, и переход в состояние 190
+    ','  сдвиг, и переход в состояние 191
+
+
+Состояние 159
+
+   39 Expr_plus_comma: Expr .
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_LessEqual     сдвиг, и переход в состояние 128
+    T_GreaterEqual  сдвиг, и переход в состояние 129
+    T_Equal         сдвиг, и переход в состояние 130
+    T_NotEqual      сдвиг, и переход в состояние 131
+    T_And           сдвиг, и переход в состояние 132
+    T_Or            сдвиг, и переход в состояние 133
+    T_Increment     сдвиг, и переход в состояние 134
+    T_Decrement     сдвиг, и переход в состояние 135
+    '<'             сдвиг, и переход в состояние 136
+    '>'             сдвиг, и переход в состояние 137
+    '+'             сдвиг, и переход в состояние 138
+    '-'             сдвиг, и переход в состояние 139
+    '*'             сдвиг, и переход в состояние 140
+    '/'             сдвиг, и переход в состояние 141
+    '%'             сдвиг, и переход в состояние 142
+    '['             сдвиг, и переход в состояние 143
+    '.'             сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 39 (Expr_plus_comma)
+
+
+Состояние 160
+
+   62 Expr: T_ReadInteger '(' ')' .
+
+    $default  вывод с использованием правила 62 (Expr)
+
+
+Состояние 161
+
+   63 Expr: T_ReadLine '(' ')' .
+
+    $default  вывод с использованием правила 63 (Expr)
+
+
+Состояние 162
+
+   40 Expr_plus_comma: Expr_plus_comma . ',' Expr
+   70 Actuals: Expr_plus_comma .
+
+    ','  сдвиг, и переход в состояние 191
+
+    $default  вывод с использованием правила 70 (Actuals)
+
+
+Состояние 163
+
+   68 Call: T_Identifier '(' Actuals . ')'
+
+    ')'  сдвиг, и переход в состояние 192
+
+
+Состояние 164
+
+   46 Expr: '(' Expr ')' .
+
+    $default  вывод с использованием правила 46 (Expr)
+
+
+Состояние 165
+
+   79 StmtBlock: '{' Var_Decl_plus Stmt_plus '}' .
+
+    $default  вывод с использованием правила 79 (StmtBlock)
+
+
+Состояние 166
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   54     | Expr T_LessEqual Expr .
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_Increment  сдвиг, и переход в состояние 134
+    T_Decrement  сдвиг, и переход в состояние 135
+    '+'          сдвиг, и переход в состояние 138
+    '-'          сдвиг, и переход в состояние 139
+    '*'          сдвиг, и переход в состояние 140
+    '/'          сдвиг, и переход в состояние 141
+    '%'          сдвиг, и переход в состояние 142
+    '['          сдвиг, и переход в состояние 143
+    '.'          сдвиг, и переход в состояние 144
+
+    T_LessEqual     ошибка (неассоциативная)
+    T_GreaterEqual  ошибка (неассоциативная)
+    '<'             ошибка (неассоциативная)
+    '>'             ошибка (неассоциативная)
+
+    $default  вывод с использованием правила 54 (Expr)
+
+
+Состояние 167
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   56     | Expr T_GreaterEqual Expr .
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_Increment  сдвиг, и переход в состояние 134
+    T_Decrement  сдвиг, и переход в состояние 135
+    '+'          сдвиг, и переход в состояние 138
+    '-'          сдвиг, и переход в состояние 139
+    '*'          сдвиг, и переход в состояние 140
+    '/'          сдвиг, и переход в состояние 141
+    '%'          сдвиг, и переход в состояние 142
+    '['          сдвиг, и переход в состояние 143
+    '.'          сдвиг, и переход в состояние 144
+
+    T_LessEqual     ошибка (неассоциативная)
+    T_GreaterEqual  ошибка (неассоциативная)
+    '<'             ошибка (неассоциативная)
+    '>'             ошибка (неассоциативная)
+
+    $default  вывод с использованием правила 56 (Expr)
+
+
+Состояние 168
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   57     | Expr T_Equal Expr .
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_LessEqual     сдвиг, и переход в состояние 128
+    T_GreaterEqual  сдвиг, и переход в состояние 129
+    T_Increment     сдвиг, и переход в состояние 134
+    T_Decrement     сдвиг, и переход в состояние 135
+    '<'             сдвиг, и переход в состояние 136
+    '>'             сдвиг, и переход в состояние 137
+    '+'             сдвиг, и переход в состояние 138
+    '-'             сдвиг, и переход в состояние 139
+    '*'             сдвиг, и переход в состояние 140
+    '/'             сдвиг, и переход в состояние 141
+    '%'             сдвиг, и переход в состояние 142
+    '['             сдвиг, и переход в состояние 143
+    '.'             сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 57 (Expr)
+
+
+Состояние 169
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   58     | Expr T_NotEqual Expr .
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_LessEqual     сдвиг, и переход в состояние 128
+    T_GreaterEqual  сдвиг, и переход в состояние 129
+    T_Increment     сдвиг, и переход в состояние 134
+    T_Decrement     сдвиг, и переход в состояние 135
+    '<'             сдвиг, и переход в состояние 136
+    '>'             сдвиг, и переход в состояние 137
+    '+'             сдвиг, и переход в состояние 138
+    '-'             сдвиг, и переход в состояние 139
+    '*'             сдвиг, и переход в состояние 140
+    '/'             сдвиг, и переход в состояние 141
+    '%'             сдвиг, и переход в состояние 142
+    '['             сдвиг, и переход в состояние 143
+    '.'             сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 58 (Expr)
+
+
+Состояние 170
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   59     | Expr T_And Expr .
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_LessEqual     сдвиг, и переход в состояние 128
+    T_GreaterEqual  сдвиг, и переход в состояние 129
+    T_Equal         сдвиг, и переход в состояние 130
+    T_NotEqual      сдвиг, и переход в состояние 131
+    T_Increment     сдвиг, и переход в состояние 134
+    T_Decrement     сдвиг, и переход в состояние 135
+    '<'             сдвиг, и переход в состояние 136
+    '>'             сдвиг, и переход в состояние 137
+    '+'             сдвиг, и переход в состояние 138
+    '-'             сдвиг, и переход в состояние 139
+    '*'             сдвиг, и переход в состояние 140
+    '/'             сдвиг, и переход в состояние 141
+    '%'             сдвиг, и переход в состояние 142
+    '['             сдвиг, и переход в состояние 143
+    '.'             сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 59 (Expr)
+
+
+Состояние 171
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   60     | Expr T_Or Expr .
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_LessEqual     сдвиг, и переход в состояние 128
+    T_GreaterEqual  сдвиг, и переход в состояние 129
+    T_Equal         сдвиг, и переход в состояние 130
+    T_NotEqual      сдвиг, и переход в состояние 131
+    T_And           сдвиг, и переход в состояние 132
+    T_Increment     сдвиг, и переход в состояние 134
+    T_Decrement     сдвиг, и переход в состояние 135
+    '<'             сдвиг, и переход в состояние 136
+    '>'             сдвиг, и переход в состояние 137
+    '+'             сдвиг, и переход в состояние 138
+    '-'             сдвиг, и переход в состояние 139
+    '*'             сдвиг, и переход в состояние 140
+    '/'             сдвиг, и переход в состояние 141
+    '%'             сдвиг, и переход в состояние 142
+    '['             сдвиг, и переход в состояние 143
+    '.'             сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 60 (Expr)
+
+
+Состояние 172
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   53     | Expr '<' Expr .
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_Increment  сдвиг, и переход в состояние 134
+    T_Decrement  сдвиг, и переход в состояние 135
+    '+'          сдвиг, и переход в состояние 138
+    '-'          сдвиг, и переход в состояние 139
+    '*'          сдвиг, и переход в состояние 140
+    '/'          сдвиг, и переход в состояние 141
+    '%'          сдвиг, и переход в состояние 142
+    '['          сдвиг, и переход в состояние 143
+    '.'          сдвиг, и переход в состояние 144
+
+    T_LessEqual     ошибка (неассоциативная)
+    T_GreaterEqual  ошибка (неассоциативная)
+    '<'             ошибка (неассоциативная)
+    '>'             ошибка (неассоциативная)
+
+    $default  вывод с использованием правила 53 (Expr)
+
+
+Состояние 173
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   55     | Expr '>' Expr .
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_Increment  сдвиг, и переход в состояние 134
+    T_Decrement  сдвиг, и переход в состояние 135
+    '+'          сдвиг, и переход в состояние 138
+    '-'          сдвиг, и переход в состояние 139
+    '*'          сдвиг, и переход в состояние 140
+    '/'          сдвиг, и переход в состояние 141
+    '%'          сдвиг, и переход в состояние 142
+    '['          сдвиг, и переход в состояние 143
+    '.'          сдвиг, и переход в состояние 144
+
+    T_LessEqual     ошибка (неассоциативная)
+    T_GreaterEqual  ошибка (неассоциативная)
+    '<'             ошибка (неассоциативная)
+    '>'             ошибка (неассоциативная)
+
+    $default  вывод с использованием правила 55 (Expr)
+
+
+Состояние 174
+
+   47 Expr: Expr . '+' Expr
+   47     | Expr '+' Expr .
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_Increment  сдвиг, и переход в состояние 134
+    T_Decrement  сдвиг, и переход в состояние 135
+    '*'          сдвиг, и переход в состояние 140
+    '/'          сдвиг, и переход в состояние 141
+    '%'          сдвиг, и переход в состояние 142
+    '['          сдвиг, и переход в состояние 143
+    '.'          сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 47 (Expr)
+
+
+Состояние 175
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   48     | Expr '-' Expr .
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_Increment  сдвиг, и переход в состояние 134
+    T_Decrement  сдвиг, и переход в состояние 135
+    '*'          сдвиг, и переход в состояние 140
+    '/'          сдвиг, и переход в состояние 141
+    '%'          сдвиг, и переход в состояние 142
+    '['          сдвиг, и переход в состояние 143
+    '.'          сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 48 (Expr)
+
+
+Состояние 176
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   49     | Expr '*' Expr .
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_Increment  сдвиг, и переход в состояние 134
+    T_Decrement  сдвиг, и переход в состояние 135
+    '['          сдвиг, и переход в состояние 143
+    '.'          сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 49 (Expr)
+
+
+Состояние 177
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   50     | Expr '/' Expr .
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_Increment  сдвиг, и переход в состояние 134
+    T_Decrement  сдвиг, и переход в состояние 135
+    '['          сдвиг, и переход в состояние 143
+    '.'          сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 50 (Expr)
+
+
+Состояние 178
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   51     | Expr '%' Expr .
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_Increment  сдвиг, и переход в состояние 134
+    T_Decrement  сдвиг, и переход в состояние 135
+    '['          сдвиг, и переход в состояние 143
+    '.'          сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 51 (Expr)
+
+
+Состояние 179
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+  100       | Expr '[' Expr . ']'
+
+    T_LessEqual     сдвиг, и переход в состояние 128
+    T_GreaterEqual  сдвиг, и переход в состояние 129
+    T_Equal         сдвиг, и переход в состояние 130
+    T_NotEqual      сдвиг, и переход в состояние 131
+    T_And           сдвиг, и переход в состояние 132
+    T_Or            сдвиг, и переход в состояние 133
+    T_Increment     сдвиг, и переход в состояние 134
+    T_Decrement     сдвиг, и переход в состояние 135
+    '<'             сдвиг, и переход в состояние 136
+    '>'             сдвиг, и переход в состояние 137
+    '+'             сдвиг, и переход в состояние 138
+    '-'             сдвиг, и переход в состояние 139
+    '*'             сдвиг, и переход в состояние 140
+    '/'             сдвиг, и переход в состояние 141
+    '%'             сдвиг, и переход в состояние 142
+    '['             сдвиг, и переход в состояние 143
+    '.'             сдвиг, и переход в состояние 144
+    ']'             сдвиг, и переход в состояние 193
+
+
+Состояние 180
+
+   69 Call: Expr '.' T_Identifier . '(' Actuals ')'
+   99 LValue: Expr '.' T_Identifier .
+
+    '('  сдвиг, и переход в состояние 194
+
+    $default  вывод с использованием правила 99 (LValue)
+
+
+Состояние 181
+
+   41 Expr: LValue '=' Expr .
+   47     | Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_LessEqual     сдвиг, и переход в состояние 128
+    T_GreaterEqual  сдвиг, и переход в состояние 129
+    T_Equal         сдвиг, и переход в состояние 130
+    T_NotEqual      сдвиг, и переход в состояние 131
+    T_And           сдвиг, и переход в состояние 132
+    T_Or            сдвиг, и переход в состояние 133
+    T_Increment     сдвиг, и переход в состояние 134
+    T_Decrement     сдвиг, и переход в состояние 135
+    '<'             сдвиг, и переход в состояние 136
+    '>'             сдвиг, и переход в состояние 137
+    '+'             сдвиг, и переход в состояние 138
+    '-'             сдвиг, и переход в состояние 139
+    '*'             сдвиг, и переход в состояние 140
+    '/'             сдвиг, и переход в состояние 141
+    '%'             сдвиг, и переход в состояние 142
+    '['             сдвиг, и переход в состояние 143
+    '.'             сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 41 (Expr)
+
+
+Состояние 182
+
+   22 ClassDecl: T_Class T_Identifier T_Extends T_Identifier T_Implements Ident_plus_comma '{' Field_star '}' .
+
+    $default  вывод с использованием правила 22 (ClassDecl)
+
+
+Состояние 183
+
+   36 Prototype: T_Void T_Identifier '(' Formals ')' . ';'
+
+    ';'  сдвиг, и переход в состояние 195
+
+
+Состояние 184
+
+   35 Prototype: Type T_Identifier '(' Formals ')' . ';'
+
+    ';'  сдвиг, и переход в состояние 196
+
+
+Состояние 185
+
+   93 WhileStmt: T_While '(' Expr ')' . Stmt
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_While           сдвиг, и переход в состояние 70
+    T_For             сдвиг, и переход в состояние 71
+    T_If              сдвиг, и переход в состояние 72
+    T_Return          сдвиг, и переход в состояние 73
+    T_Break           сдвиг, и переход в состояние 74
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_Print           сдвиг, и переход в состояние 77
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+    '{'               сдвиг, и переход в состояние 58
+
+    $default  вывод с использованием правила 101 (Optional_Expr)
+
+    Expr           переход в состояние 91
+    Call           переход в состояние 92
+    Constant       переход в состояние 93
+    StmtBlock      переход в состояние 95
+    Stmt           переход в состояние 197
+    IfStmt         переход в состояние 97
+    WhileStmt      переход в состояние 98
+    ForStmt        переход в состояние 99
+    ReturnStmt     переход в состояние 100
+    BreakStmt      переход в состояние 101
+    PrintStmt      переход в состояние 102
+    LValue         переход в состояние 103
+    Optional_Expr  переход в состояние 104
+
+
+Состояние 186
+
+   94 ForStmt: T_For '(' Optional_Expr ';' . Expr ';' Optional_Expr ')' Stmt
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 198
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 187
+
+   91 IfStmt: T_If '(' Expr ')' . Stmt
+   92       | T_If '(' Expr ')' . Stmt T_Else Stmt
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_While           сдвиг, и переход в состояние 70
+    T_For             сдвиг, и переход в состояние 71
+    T_If              сдвиг, и переход в состояние 72
+    T_Return          сдвиг, и переход в состояние 73
+    T_Break           сдвиг, и переход в состояние 74
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_Print           сдвиг, и переход в состояние 77
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+    '{'               сдвиг, и переход в состояние 58
+
+    $default  вывод с использованием правила 101 (Optional_Expr)
+
+    Expr           переход в состояние 91
+    Call           переход в состояние 92
+    Constant       переход в состояние 93
+    StmtBlock      переход в состояние 95
+    Stmt           переход в состояние 199
+    IfStmt         переход в состояние 97
+    WhileStmt      переход в состояние 98
+    ForStmt        переход в состояние 99
+    ReturnStmt     переход в состояние 100
+    BreakStmt      переход в состояние 101
+    PrintStmt      переход в состояние 102
+    LValue         переход в состояние 103
+    Optional_Expr  переход в состояние 104
+
+
+Состояние 188
+
+   64 Expr: T_New '(' T_Identifier ')' .
+
+    $default  вывод с использованием правила 64 (Expr)
+
+
+Состояние 189
+
+   65 Expr: T_NewArray '(' Expr ',' . Type ')'
+
+    T_Bool        сдвиг, и переход в состояние 2
+    T_Int         сдвиг, и переход в состояние 3
+    T_Double      сдвиг, и переход в состояние 4
+    T_String      сдвиг, и переход в состояние 5
+    T_Identifier  сдвиг, и переход в состояние 8
+
+    Type  переход в состояние 200
+
+
+Состояние 190
+
+   97 PrintStmt: T_Print '(' Expr_plus_comma ')' . ';'
+
+    ';'  сдвиг, и переход в состояние 201
+
+
+Состояние 191
+
+   40 Expr_plus_comma: Expr_plus_comma ',' . Expr
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    Expr      переход в состояние 202
+    Call      переход в состояние 92
+    Constant  переход в состояние 93
+    LValue    переход в состояние 103
+
+
+Состояние 192
+
+   68 Call: T_Identifier '(' Actuals ')' .
+
+    $default  вывод с использованием правила 68 (Call)
+
+
+Состояние 193
+
+  100 LValue: Expr '[' Expr ']' .
+
+    $default  вывод с использованием правила 100 (LValue)
+
+
+Состояние 194
+
+   69 Call: Expr '.' T_Identifier '(' . Actuals ')'
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    $default  вывод с использованием правила 71 (Actuals)
+
+    Expr_plus_comma  переход в состояние 162
+    Expr             переход в состояние 159
+    Call             переход в состояние 92
+    Actuals          переход в состояние 203
+    Constant         переход в состояние 93
+    LValue           переход в состояние 103
+
+
+Состояние 195
+
+   36 Prototype: T_Void T_Identifier '(' Formals ')' ';' .
+
+    $default  вывод с использованием правила 36 (Prototype)
+
+
+Состояние 196
+
+   35 Prototype: Type T_Identifier '(' Formals ')' ';' .
+
+    $default  вывод с использованием правила 35 (Prototype)
+
+
+Состояние 197
+
+   93 WhileStmt: T_While '(' Expr ')' Stmt .
+
+    $default  вывод с использованием правила 93 (WhileStmt)
+
+
+Состояние 198
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   94 ForStmt: T_For '(' Optional_Expr ';' Expr . ';' Optional_Expr ')' Stmt
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_LessEqual     сдвиг, и переход в состояние 128
+    T_GreaterEqual  сдвиг, и переход в состояние 129
+    T_Equal         сдвиг, и переход в состояние 130
+    T_NotEqual      сдвиг, и переход в состояние 131
+    T_And           сдвиг, и переход в состояние 132
+    T_Or            сдвиг, и переход в состояние 133
+    T_Increment     сдвиг, и переход в состояние 134
+    T_Decrement     сдвиг, и переход в состояние 135
+    '<'             сдвиг, и переход в состояние 136
+    '>'             сдвиг, и переход в состояние 137
+    '+'             сдвиг, и переход в состояние 138
+    '-'             сдвиг, и переход в состояние 139
+    '*'             сдвиг, и переход в состояние 140
+    '/'             сдвиг, и переход в состояние 141
+    '%'             сдвиг, и переход в состояние 142
+    '['             сдвиг, и переход в состояние 143
+    '.'             сдвиг, и переход в состояние 144
+    ';'             сдвиг, и переход в состояние 204
+
+
+Состояние 199
+
+   91 IfStmt: T_If '(' Expr ')' Stmt .
+   92       | T_If '(' Expr ')' Stmt . T_Else Stmt
+
+    T_Else  сдвиг, и переход в состояние 205
+
+    $default  вывод с использованием правила 91 (IfStmt)
+
+
+Состояние 200
+
+   15 Type: Type . T_Dims
+   65 Expr: T_NewArray '(' Expr ',' Type . ')'
+
+    T_Dims  сдвиг, и переход в состояние 24
+    ')'     сдвиг, и переход в состояние 206
+
+
+Состояние 201
+
+   97 PrintStmt: T_Print '(' Expr_plus_comma ')' ';' .
+
+    $default  вывод с использованием правила 97 (PrintStmt)
+
+
+Состояние 202
+
+   40 Expr_plus_comma: Expr_plus_comma ',' Expr .
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | Expr . '%' Expr
+   53     | Expr . '<' Expr
+   54     | Expr . T_LessEqual Expr
+   55     | Expr . '>' Expr
+   56     | Expr . T_GreaterEqual Expr
+   57     | Expr . T_Equal Expr
+   58     | Expr . T_NotEqual Expr
+   59     | Expr . T_And Expr
+   60     | Expr . T_Or Expr
+   66     | Expr . T_Increment
+   67     | Expr . T_Decrement
+   69 Call: Expr . '.' T_Identifier '(' Actuals ')'
+   99 LValue: Expr . '.' T_Identifier
+  100       | Expr . '[' Expr ']'
+
+    T_LessEqual     сдвиг, и переход в состояние 128
+    T_GreaterEqual  сдвиг, и переход в состояние 129
+    T_Equal         сдвиг, и переход в состояние 130
+    T_NotEqual      сдвиг, и переход в состояние 131
+    T_And           сдвиг, и переход в состояние 132
+    T_Or            сдвиг, и переход в состояние 133
+    T_Increment     сдвиг, и переход в состояние 134
+    T_Decrement     сдвиг, и переход в состояние 135
+    '<'             сдвиг, и переход в состояние 136
+    '>'             сдвиг, и переход в состояние 137
+    '+'             сдвиг, и переход в состояние 138
+    '-'             сдвиг, и переход в состояние 139
+    '*'             сдвиг, и переход в состояние 140
+    '/'             сдвиг, и переход в состояние 141
+    '%'             сдвиг, и переход в состояние 142
+    '['             сдвиг, и переход в состояние 143
+    '.'             сдвиг, и переход в состояние 144
+
+    $default  вывод с использованием правила 40 (Expr_plus_comma)
+
+
+Состояние 203
+
+   69 Call: Expr '.' T_Identifier '(' Actuals . ')'
+
+    ')'  сдвиг, и переход в состояние 207
+
+
+Состояние 204
+
+   94 ForStmt: T_For '(' Optional_Expr ';' Expr ';' . Optional_Expr ')' Stmt
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+
+    $default  вывод с использованием правила 101 (Optional_Expr)
+
+    Expr           переход в состояние 91
+    Call           переход в состояние 92
+    Constant       переход в состояние 93
+    LValue         переход в состояние 103
+    Optional_Expr  переход в состояние 208
+
+
+Состояние 205
+
+   92 IfStmt: T_If '(' Expr ')' Stmt T_Else . Stmt
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_While           сдвиг, и переход в состояние 70
+    T_For             сдвиг, и переход в состояние 71
+    T_If              сдвиг, и переход в состояние 72
+    T_Return          сдвиг, и переход в состояние 73
+    T_Break           сдвиг, и переход в состояние 74
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_Print           сдвиг, и переход в состояние 77
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+    '{'               сдвиг, и переход в состояние 58
+
+    $default  вывод с использованием правила 101 (Optional_Expr)
+
+    Expr           переход в состояние 91
+    Call           переход в состояние 92
+    Constant       переход в состояние 93
+    StmtBlock      переход в состояние 95
+    Stmt           переход в состояние 209
+    IfStmt         переход в состояние 97
+    WhileStmt      переход в состояние 98
+    ForStmt        переход в состояние 99
+    ReturnStmt     переход в состояние 100
+    BreakStmt      переход в состояние 101
+    PrintStmt      переход в состояние 102
+    LValue         переход в состояние 103
+    Optional_Expr  переход в состояние 104
+
+
+Состояние 206
+
+   65 Expr: T_NewArray '(' Expr ',' Type ')' .
+
+    $default  вывод с использованием правила 65 (Expr)
+
+
+Состояние 207
+
+   69 Call: Expr '.' T_Identifier '(' Actuals ')' .
+
+    $default  вывод с использованием правила 69 (Call)
+
+
+Состояние 208
+
+   94 ForStmt: T_For '(' Optional_Expr ';' Expr ';' Optional_Expr . ')' Stmt
+
+    ')'  сдвиг, и переход в состояние 210
+
+
+Состояние 209
+
+   92 IfStmt: T_If '(' Expr ')' Stmt T_Else Stmt .
+
+    $default  вывод с использованием правила 92 (IfStmt)
+
+
+Состояние 210
+
+   94 ForStmt: T_For '(' Optional_Expr ';' Expr ';' Optional_Expr ')' . Stmt
+
+    T_Null            сдвиг, и переход в состояние 68
+    T_This            сдвиг, и переход в состояние 69
+    T_While           сдвиг, и переход в состояние 70
+    T_For             сдвиг, и переход в состояние 71
+    T_If              сдвиг, и переход в состояние 72
+    T_Return          сдвиг, и переход в состояние 73
+    T_Break           сдвиг, и переход в состояние 74
+    T_New             сдвиг, и переход в состояние 75
+    T_NewArray        сдвиг, и переход в состояние 76
+    T_Print           сдвиг, и переход в состояние 77
+    T_ReadInteger     сдвиг, и переход в состояние 78
+    T_ReadLine        сдвиг, и переход в состояние 79
+    T_Identifier      сдвиг, и переход в состояние 113
+    T_StringConstant  сдвиг, и переход в состояние 81
+    T_IntConstant     сдвиг, и переход в состояние 82
+    T_DoubleConstant  сдвиг, и переход в состояние 83
+    T_BoolConstant    сдвиг, и переход в состояние 84
+    '-'               сдвиг, и переход в состояние 85
+    '!'               сдвиг, и переход в состояние 86
+    '('               сдвиг, и переход в состояние 87
+    '{'               сдвиг, и переход в состояние 58
+
+    $default  вывод с использованием правила 101 (Optional_Expr)
+
+    Expr           переход в состояние 91
+    Call           переход в состояние 92
+    Constant       переход в состояние 93
+    StmtBlock      переход в состояние 95
+    Stmt           переход в состояние 211
+    IfStmt         переход в состояние 97
+    WhileStmt      переход в состояние 98
+    ForStmt        переход в состояние 99
+    ReturnStmt     переход в состояние 100
+    BreakStmt      переход в состояние 101
+    PrintStmt      переход в состояние 102
+    LValue         переход в состояние 103
+    Optional_Expr  переход в состояние 104
+
+
+Состояние 211
+
+   94 ForStmt: T_For '(' Optional_Expr ';' Expr ';' Optional_Expr ')' Stmt .
+
+    $default  вывод с использованием правила 94 (ForStmt)

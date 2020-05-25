@@ -11,12 +11,14 @@
 #include "scope.h"
 
 Node::Node(yyltype loc) {
+  
     location = new yyltype(loc);
     parent = NULL;
     nodeScope = NULL;
 }
 
 Node::Node() {
+
     location = NULL;
     parent = NULL;
     nodeScope = NULL;
@@ -31,9 +33,21 @@ Decl *Node::FindDecl(Identifier *idToFind, lookup l) {
         return parent->FindDecl(idToFind, l);
     return NULL;
 }
-	 
+
 Identifier::Identifier(yyltype loc, const char *n) : Node(loc) {
     name = strdup(n);
     cached = NULL;
-} 
+}
+
+
+/*Проверяем, что находиться в скопе классов*/
+bool Node::IsClassScope(lookup l) {
+    //printf("Class lookup\n");
+    if (!nodeScope) PrepareScope();
+    if (nodeScope && (dynamic_cast<ClassDecl*>(parent)!=NULL))
+        return true;
+    if (l == kDeep && parent)
+        return parent->IsClassScope(l);
+    return false;
+}
 

@@ -4,8 +4,7 @@
  * helpful in writing the projects (error handling, debug printing)
  */
 
-#ifndef _H_utility
-#define _H_utility
+#pragma once
 
 #include <stdlib.h>
 #include <stdio.h>

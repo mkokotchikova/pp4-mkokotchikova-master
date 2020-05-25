@@ -9,8 +9,7 @@
  * part, you will just use the class as given.
  */
 
-#ifndef _H_errors
-#define _H_errors
+#pragma once
 
 #include <string>
 using std::string;

@@ -5,8 +5,8 @@
  * the lex-generated scanner.
  */
 
-#ifndef _H_scanner
-#define _H_scanner
+
+#pragma once
 
 #include <stdio.h>
 

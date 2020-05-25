@@ -4,8 +4,7 @@
  * table used to map identifier names to Declaration objects.
  */
 
-#ifndef _H_scope
-#define _H_scope
+#pragma once
 
 #include "hashtable.h"
 

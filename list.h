@@ -25,8 +25,7 @@
  *    }
  */
 
-#ifndef _H_list
-#define _H_list
+#pragma once
 
 #include <deque>
 #include "utility.h"  // for Assert()

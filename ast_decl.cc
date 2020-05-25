@@ -2,30 +2,36 @@
  * -----------------
  * Implementation of Decl node classes.
  */
+
 #include "ast_decl.h"
 #include "ast_type.h"
 #include "ast_stmt.h"
 #include "scope.h"
 #include "errors.h"
-        
-         
+
+
+// получаем местоположение узла
 Decl::Decl(Identifier *n) : Node(*n->GetLocation()) {
     Assert(n != NULL);
     (id=n)->SetParent(this); 
 }
 
+// определяем есть ли конфликты с предыдущим узлом
 bool Decl::ConflictsWithPrevious(Decl *prev) {
     ReportError::DeclConflict(this, prev);
     return true;
 }
 
+//устанавливаем отца
 VarDecl::VarDecl(Identifier *n, Type *t) : Decl(n) {
     Assert(n != NULL && t != NULL);
     (type=t)->SetParent(this);
 }
-  
+
+//
 void VarDecl::Check() { type->Check(); }
 
+//
 ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<Decl*> *m) : Decl(n) {
     // extends can be NULL, impl & mem may be empty lists but cannot be NULL
     Assert(n != NULL && imp != NULL && m != NULL);     
@@ -38,6 +44,7 @@ ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<D
     convImp = NULL;
 }
 
+//класс для проверки элементов дерева
 void ClassDecl::Check() {
 
     if (extends && !extends->IsClass()) {
@@ -58,6 +65,7 @@ void ClassDecl::Check() {
 // This is not done very cleanly. I should sit down and sort this out. Right now
 // I was using the copy-in strategy from the old compiler, but I think the link to
 // parent may be the better way now.
+//обхват обследования
 Scope *ClassDecl::PrepareScope()
 {
     if (nodeScope) return nodeScope;
@@ -80,7 +88,7 @@ Scope *ClassDecl::PrepareScope()
 }
 
 
-
+//по умолчанию задаем, что все узлы
 InterfaceDecl::InterfaceDecl(Identifier *n, List<Decl*> *m) : Decl(n) {
     Assert(n != NULL && m != NULL);
     (members=m)->SetParentAll(this);

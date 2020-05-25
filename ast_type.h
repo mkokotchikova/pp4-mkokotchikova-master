@@ -6,8 +6,7 @@
  * and the ArrayType for arrays of other types.  
  */
  
-#ifndef _H_ast_type
-#define _H_ast_type
+#pragma once
 
 #include "ast.h"
 #include "list.h"

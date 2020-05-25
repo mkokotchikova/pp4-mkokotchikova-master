@@ -6,8 +6,7 @@
  * and interfaces.
  */
 
-#ifndef _H_ast_decl
-#define _H_ast_decl
+#pragma once
 
 #include "ast.h"
 #include "list.h"

@@ -6,9 +6,7 @@
  * node class for that construct. 
  */
 
-
-#ifndef _H_ast_stmt
-#define _H_ast_stmt
+#pragma once
 
 #include "list.h"
 #include "ast.h"

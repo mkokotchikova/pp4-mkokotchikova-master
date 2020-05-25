@@ -30,8 +30,8 @@
  *       }
  */
 
-#ifndef _H_hashtable
-#define _H_hashtable
+#pragma once
+
 
 #include <map>
 #include <string.h>
